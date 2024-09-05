@@ -14,6 +14,7 @@ set scrolloff=6
 set cursorline
 set noerrorbells
 set visualbell
+set t_vb=
 set noswapfile
 set nobackup
 set ignorecase
@@ -24,6 +25,7 @@ set textwidth=80
 set colorcolumn=80
 set mouse=a
 set signcolumn=yes
+let mapleader = " "
 
 " language specific tab spacing
 augroup FiletypeSettings
@@ -42,9 +44,13 @@ augroup FiletypeSettings
   autocmd BufNewFile,BufRead Makefile setlocal noexpandtab tabstop=8 softtabstop=0 shiftwidth=8
 augroup END
 
+" color scheme
 if (has("termguicolors"))
     set termguicolors
 endif
+let ayucolor="light"
+colorscheme ayu
+let g:lightline = {'colorscheme': 'ayu'}
 
 " translucent vim background on everyting including special chars and status
 " lines
@@ -52,7 +58,6 @@ highlight Normal ctermbg=NONE guibg=NONE
 highlight NonText ctermbg=NONE guibg=NONE
 highlight StatusLine ctermbg=NONE guibg=NONE
 highlight StatusLineNC ctermbg=NONE guibg=NONE
-highlight SignColumn ctermbg=NONE guibg=NONE
 " Remaps
 " clear highlights after a file string search with "/" with enter
 nnoremap <CR> :noh<CR><CR>:<backspace>
