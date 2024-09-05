@@ -23,5 +23,7 @@ git clone https://github.com/itchyny/lightline.vim.git $HOME/.vim/bundle/lightli
 git clone https://github.com/tpope/vim-commentary.git $HOME/.vim/bundle/vim-commentary
 # undo tree 
 git clone https://github.com/mbbill/undotree.git $HOME/.vim/bundle/undotree
+# fzf.vim
+git clone https://github.com/junegunn/fzf.vim.git $HOME/.vim/bundle/fzf.vim
 # Confirmation message
 echo "Vim environment setup complete!"

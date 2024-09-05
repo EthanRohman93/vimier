@@ -127,21 +127,24 @@ function! IsCocServerInstalled(server)
 endfunction
 
 function! CocInstallServers()
-  let servers = [
-        'coc-tsserver',
-        'coc-json',
-        'coc-pyright',
-        'coc-html',
-        'coc-css',
-        'coc-sh',
-        'coc-docker',
-        'coc-java',
-        'coc-markdownlint'
-#        'coc-rust-analyzer'
-  ]
+  let servers = ['coc-tsserver', 'coc-json', 'coc-pyright', 'coc-html', 'coc-css', 'coc-sh', 'coc-docker', 'coc-java', 'coc-markdownlint']
   for server in servers
     if !IsCocServerInstalled(server)
       execute 'CocInstall ' . server
     endif
   endfor
 endfunction
+
+" Basic fzf.vim configuration
+let g:fzf_command_prefix = 'Fzf'
+
+" Default fzf layout
+let g:fzf_layout = { 'down': '~40%' }
+
+" Key mappings for fzf.vim
+nnoremap <leader>ff :FzfFiles<CR>
+nnoremap <leader>fb :FzfBuffers<CR>
+nnoremap <leader>h :FzfHistory<CR>
+nnoremap <leader>fs :FzfRg<CR>
+nnoremap <leader>fg :FzfGFiles?<CR>
+nnoremap <leader>fG :FzfGFiles<CR>
