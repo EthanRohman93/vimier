@@ -13,6 +13,8 @@ curl -LSso $HOME/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 echo "Cloning Vim plugins..."
 # lsp support
 git clone -b release https://github.com/neoclide/coc.nvim $HOME/.vim/bundle/coc.nvim
+# server config file
+# cp ./coc-settings.json $HOME/.vim/
 # color scheme
 git clone https://github.com/ayu-theme/ayu-vim.git $HOME/.vim/bundle/ayu-vim
 # lightline.vim

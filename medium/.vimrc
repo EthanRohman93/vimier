@@ -107,3 +107,41 @@ endfunction
 nmap <leader>rn <Plug>(coc-rename)
 autocmd ColorScheme *
     \ hi CocUnusedHighlight cterm=underline gui=underline guifg=#808080
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" Formatting selected code
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+"servers
+" Define an autocommand group to handle the installation
+augroup CoCInstall
+  autocmd!
+  autocmd VimEnter * call CocInstallServers()
+augroup END
+" Function to check if a specific CoC server is installed
+function! IsCocServerInstalled(server)
+  let extensions_dir = expand('~/.config/coc/extensions/node_modules/')
+  return isdirectory(extensions_dir . '/' . a:server)
+endfunction
+
+function! CocInstallServers()
+  let servers = [
+        'coc-tsserver',
+        'coc-json',
+        'coc-pyright',
+        'coc-html',
+        'coc-css',
+        'coc-sh',
+        'coc-docker',
+        'coc-java',
+        'coc-markdownlint'
+#        'coc-rust-analyzer'
+  ]
+  for server in servers
+    if !IsCocServerInstalled(server)
+      execute 'CocInstall ' . server
+    endif
+  endfor
+endfunction
