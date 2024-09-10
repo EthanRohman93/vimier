@@ -70,23 +70,6 @@ git_short_hash() {
   git rev-parse --short HEAD 2>/dev/null
 }
 
-git_status_indicator() {
-  local status=$(git status --porcelain 2>/dev/null)
-  local O=''  # Staged changes indicator
-  local X=''  # Unstaged changes indicator
-  if echo "$status" | grep -qE '^[A-Z]'; then
-    O='O'
-  fi
-  if echo "$status" | grep -qE '^.[A-Z]'; then
-    X='X'
-  fi
-  if [ -z "$O" ] && [ -z "$X" ]; then
-    echo ""
-  else
-    echo "<\[\e[38;2;0;166;118m\]${O}${X}\[\e[0m\]"  # Chill green for git status (#00A676)
-  fi
-}
-
 in_git_repo() {
   git rev-parse --is-inside-work-tree &>/dev/null
 }
@@ -98,12 +81,10 @@ custom_prompt() {
   local PWD_COLOR="\[\e[38;2;41;120;181m\]"  # Medium blue for directory (#2978b5)
   local RED="\[\e[38;2;255;0;0m\]"
   local GIT_INFO=""
-  local GIT_STATUS=""
   if in_git_repo; then
     GIT_INFO="[${GIT_HASH}] ${GIT_BRANCH}\n"  # Git branch and hash
-    GIT_STATUS=$(git_status_indicator)  # Get the Git status indicator (O and/or X)
   fi
-  PS1="${PWD_COLOR}${PWD_PATH}\[\e[0m\]\n${GIT_INFO}${GIT_STATUS}${RED}>: \[\e[0m\]"
+  PS1="${PWD_COLOR}${PWD_PATH}\[\e[0m\]\n${GIT_INFO}${RED}>: \[\e[0m\]"
 }
 
 PROMPT_COMMAND=custom_prompt
@@ -163,7 +144,7 @@ if ! shopt -oq posix; then
 fi
 
 complete -C /usr/bin/terraform terraform
-. "$HOME/.cargo/env"
+. /usr/local/bin/z
 
 # Set default editor to vim
 export EDITOR='vim'
@@ -208,7 +189,8 @@ alias ....='cd ../../..'
 alias t='tree -I "node_modules|.git|dist|.cache"'
 alias h1='history 10'
 alias totalusage='df -hl --total | grep total'
-
+alias home='cd ~'
+alias vi='vim'
 
 ###############################################################################
 # functions
@@ -228,8 +210,8 @@ up() {
 # find file and open in vim
 fv() {
   fzf --preview 'batcat --color=always {}' \
-      --preview-window 'right:50%,border-left' \
-      --height 33% \
+      --preview-window 'right:70%,border-left' \
+      --height 40% \
       --info inline \
       --layout reverse \
       --print0 | xargs -0 -o vim
@@ -260,4 +242,3 @@ fd() {
     --preview-window 'right:50%,border-left') &&
   cd "$dir"
 }
-
