@@ -82,8 +82,6 @@ nnoremap <C-d> <C-d>zz
 nnoremap <C-u> <C-u>zz
 "always shows status line in every pane
 set laststatus=2
-"buffer manager
-source ~/buffer_manager.vim
 "lsp stuff
 highlight CocErrorHighlight ctermfg=red guifg=red cterm=underline gui=underline
 highlight CocErrorSign ctermfg=red guifg=red cterm=underline gui=underline
@@ -148,3 +146,8 @@ nnoremap <leader>h :FzfHistory<CR>
 nnoremap <leader>fs :FzfRg<CR>
 nnoremap <leader>fg :FzfGFiles?<CR>
 nnoremap <leader>fG :FzfGFiles<CR>
+" comments
+nmap <leader>c <Plug>CommentaryLine
+vmap <leader>c <Plug>Commentary
+" undotree
+nnoremap <leader> u :UndotreeToggle<cr>
