@@ -77,14 +77,14 @@ in_git_repo() {
 custom_prompt() {
   local PWD_PATH="\w"  # Display the full working directory
   local GIT_BRANCH="\[\e[38;2;255;69;0m\]$(git_branch)\[\e[0m\]"  # Red-orange for branch (#FF4500)
-  local GIT_HASH="\[\e[38;2;255;0;0m\]$(git_short_hash)\[\e[0m\]"  # Red for commit hash (#FF0000)
+  local GIT_HASH="\[\e[38;2;41;120;181m\]$(git_short_hash)\[\e[0m\]"  # Red for commit hash (#FF0000)
   local PWD_COLOR="\[\e[38;2;41;120;181m\]"  # Medium blue for directory (#2978b5)
   local RED="\[\e[38;2;255;0;0m\]"
   local GIT_INFO=""
   if in_git_repo; then
     GIT_INFO="[${GIT_HASH}] ${GIT_BRANCH}\n"  # Git branch and hash
   fi
-  PS1="${PWD_COLOR}${PWD_PATH}\[\e[0m\]\n${GIT_INFO}${RED}>: \[\e[0m\]"
+  PS1="${PWD_PATH}\[\e[0m\]\n${GIT_INFO}${RED}>: \[\e[0m\]"
 }
 
 PROMPT_COMMAND=custom_prompt
@@ -190,10 +190,17 @@ alias t='tree -I "node_modules|.git|dist|.cache"'
 alias h1='history 10'
 alias totalusage='df -hl --total | grep total'
 alias home='cd ~'
-alias vi='vim'
-
+alias v='vim'
+alias :wq='clear'
 ###############################################################################
 # functions
+tv() {
+  if ! test -f "$1"; then
+    touch "$1" && vim "$1"
+  else
+    vim "$1"
+  fi
+}
 # Make a directory and cd into it
 mcd() {
   mkdir -p "$1" && cd "$1"
@@ -211,7 +218,7 @@ up() {
 fv() {
   fzf --preview 'batcat --color=always {}' \
       --preview-window 'right:70%,border-left' \
-      --height 40% \
+      --height 70% \
       --info inline \
       --layout reverse \
       --print0 | xargs -0 -o vim
@@ -242,3 +249,48 @@ fd() {
     --preview-window 'right:50%,border-left') &&
   cd "$dir"
 }
+
+cs() {
+    file=$(fzf --query="$1" --select-1 --exit-0)
+    if [[ -n "$file" ]]; then
+        head -n 35 "$file" | cat --paging=never "$file"
+    else
+        echo "No matching file found."
+    fi
+}
+# Function to interact with GPT and manage the virtual environment
+ai() {
+    local CURRENT_VENV="$VIRTUAL_ENV"
+    if [[ -n "$CURRENT_VENV" && "$(basename "$CURRENT_VENV")" != "openai_env" ]]; then
+        pyenv deactivate
+    fi
+    if [[ -z "$VIRTUAL_ENV" || "$(basename "$VIRTUAL_ENV")" != "openai_env" ]]; then
+        pyenv activate openai_env || { echo "Failed to activate openai_env"; return 1; }
+    fi
+    python ~/gpt.py "$@"
+    if [[ -n "$CURRENT_VENV" && "$(basename "$CURRENT_VENV")" != "openai_env" ]]; then
+        pyenv activate "$(basename "$CURRENT_VENV")" || { echo "Failed to restore original environment"; return 1; }
+    elif [[ -z "$CURRENT_VENV" ]]; then
+        pyenv deactivate
+    fi
+}
+
+# Function to interact with GPT and manage the virtual environment
+aiv() {
+    local CURRENT_VENV="$VIRTUAL_ENV"
+    if [[ -n "$CURRENT_VENV" && "$(basename "$CURRENT_VENV")" != "openai_env" ]]; then
+        pyenv deactivate
+    fi
+    if [[ -z "$VIRTUAL_ENV" || "$(basename "$VIRTUAL_ENV")" != "openai_env" ]]; then
+        pyenv activate openai_env || { echo "Failed to activate openai_env"; return 1; }
+    fi
+    python ~/gpt_v.py "$@"
+    if [[ -n "$CURRENT_VENV" && "$(basename "$CURRENT_VENV")" != "openai_env" ]]; then
+        pyenv activate "$(basename "$CURRENT_VENV")" || { echo "Failed to restore original environment"; return 1; }
+    elif [[ -z "$CURRENT_VENV" ]]; then
+        pyenv deactivate
+    fi
+    vim /home/rohman/.aiv
+}
+export OPENAI_API_KEY=""
+source ~/ai.sh
