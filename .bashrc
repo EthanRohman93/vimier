@@ -1,7 +1,47 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
+make_prompt(){
+	PS1='${debian_chroot:+($debian_chroot)}'
 
+	if [ -n "$VIRTUAL_ENV" ]; then
+                PS1+="$(basename $VIRTUAL_ENV)~"  # Add venv name in parentheses
+        fi
+
+	PS1+='\[\e[0;36m\]\u'
+	PS1+='\[\e[0;0m\]\[\e[0;33m\]\D{%H:%M}'
+	colorgit
+	PS1+='$(gitbranch)'
+	PS1+='\[\e[0;35m\]\W'
+
+	# End Prompt Formatting
+	PS1+='\[\033[00m\]:'
+}
+
+PROMPT_COMMAND='make_prompt'
+
+#<------------[  Function Definitions  ]------------>#
+
+colorgit(){
+	porcelain=$(git status --porcelain=v1 2>/dev/null)
+	color_code=$(echo "$porcelain" | $HOME/main)
+	PS1+='\[\e[0;${color_code}m\]'
+}
+
+gitbranch(){
+	myvar="($(git branch 2>/dev/null | grep '\*' | sed 's/* //'))"
+    if [ ${#myvar} -gt 3 ]; then
+        echo $myvar
+	else
+		exit
+	fi
+}
+
+# Get user "tag"- needs modularity
+usertag(){
+	full_user=`uname -n`
+	echo ${full_user} | cut -d "-" -f 2
+}
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -62,33 +102,6 @@ fi
 #     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 # fi
 # Function to get the current Git branch
-git_branch() {
-  git rev-parse --abbrev-ref HEAD 2>/dev/null
-}
-
-git_short_hash() {
-  git rev-parse --short HEAD 2>/dev/null
-}
-
-in_git_repo() {
-  git rev-parse --is-inside-work-tree &>/dev/null
-}
-
-custom_prompt() {
-  local PWD_PATH="\w"  # Display the full working directory
-  local GIT_BRANCH="\[\e[38;2;255;69;0m\]$(git_branch)\[\e[0m\]"  # Red-orange for branch (#FF4500)
-  local GIT_HASH="\[\e[38;2;41;120;181m\]$(git_short_hash)\[\e[0m\]"  # Red for commit hash (#FF0000)
-  local PWD_COLOR="\[\e[38;2;41;120;181m\]"  # Medium blue for directory (#2978b5)
-  local RED="\[\e[38;2;255;0;0m\]"
-  local GIT_INFO=""
-  if in_git_repo; then
-    GIT_INFO="[${GIT_HASH}] ${GIT_BRANCH}\n"  # Git branch and hash
-  fi
-  PS1="${PWD_PATH}\[\e[0m\]\n${GIT_INFO}${RED}>: \[\e[0m\]"
-}
-
-PROMPT_COMMAND=custom_prompt
-unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
