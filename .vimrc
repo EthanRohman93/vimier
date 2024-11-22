@@ -10,7 +10,7 @@ set expandtab
 set nowrap
 set number
 set relativenumber
-set scrolloff=6
+set scrolloff=10
 set cursorline
 set noerrorbells
 set visualbell
@@ -21,12 +21,13 @@ set ignorecase
 set smartcase
 set incsearch
 set hlsearch
-set textwidth=80
-set colorcolumn=80
+set textwidth=100
+set colorcolumn=80,100
 set mouse=a
 set signcolumn=yes
 set hidden
 set cmdheight=1
+set noshowmode
 let mapleader = " "
 
 " language specific tab spacing
@@ -35,6 +36,7 @@ augroup FiletypeSettings
   " Python: 4 spaces, use expandtab
   autocmd BufNewFile,BufRead *.py setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab smartindent
   autocmd BufNewFile,BufRead *.c setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab smartindent
+  autocmd BufNewFile,BufRead *.zig setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab smartindent
   " Markdown: 4 spaces, use expandtab, wrap at 80 characters
   autocmd BufNewFile,BufRead *.md setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=80
   " HTML, JSON, YAML, CSS, JSX: 2 spaces, use expandtab
@@ -50,12 +52,13 @@ augroup FiletypeSettings
 augroup END
 
 " color scheme
-if (has("termguicolors"))
-    set termguicolors
+if !has('gui_running')
+  set t_Co=256
 endif
-let ayucolor="dark"
-colorscheme ayu
-let g:lightline = {'colorscheme': 'ayu'}
+set background=dark
+colorscheme gruvbox
+let g:lightline = {}
+let g:lightline.colorscheme = 'gruvbox'
 
 " translucent vim background on everyting including special chars and status
 " lines
